@@ -1,1 +1,3 @@
 # storeNodeApp
+
+- npm start
