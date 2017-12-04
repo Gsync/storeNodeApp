@@ -1,4 +1,4 @@
-/*
+ /*
   Catch Errors Handler
 
   With async/await, you need some way to catch errors
