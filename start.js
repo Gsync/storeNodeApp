@@ -11,6 +11,8 @@ mongoose.connection.on('error', (err) => {
 });
 
 // READY?! Let's go!
+// Import the data model
+require('./models/Stores');
 
 
 // Start our app!
