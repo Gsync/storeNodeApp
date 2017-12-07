@@ -52,4 +52,11 @@ storeSchema.pre('save', async function(next) {
     next();
 });
 
+storeSchema.statics.getTagsList = function () {
+    return this.aggregate([
+        { $unwind: '$tags' }, //isolate individual stores based on each tag
+        { $group: { _id: '$tags', count: { $sum: 1 } }} //group them based on tags and count the stores in each group
+    ]);
+}
+
 module.exports = mongoose.model('Store', storeSchema);
