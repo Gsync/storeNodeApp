@@ -67,7 +67,7 @@ exports.editStores = async (req, res) => {
      const store = await Store.findOne({_id: req.params.id});
     confirmOwner(store, req.user); //confirm the user is owner of the store
      res.render('editStore', {title: `Edit ${store.name}`, store});
-}
+};
 
 exports.updateStore = async (req, res) => {
     //Set the location data to be a point
@@ -80,14 +80,14 @@ exports.updateStore = async (req, res) => {
     req.flash('success', `Successfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store</a>`);
 
     res.redirect(`/stores/${store._id}/edit`);
-}
+};
 
 exports.getStoreBySlug = async (req, res, next) => {
     const store = await Store.findOne({ slug: req.params.slug })
         .populate('author'); //add user info in the object
     if (!store) return next(); //keep going to next if no store
     res.render('store', { title: store.name, store });
-}
+};
 
 exports.getStoresByTag = async (req, res) => {
     const tag = req.params.tag;
@@ -96,4 +96,24 @@ exports.getStoresByTag = async (req, res) => {
     const storesPromise = Store.find({ tags: tagQuery });
     const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
     res.render('tag', { title: 'Tags', tags: tags, tag: tag, stores: stores });
-}
+};
+
+exports.searchStores = async (req, res) => {
+    const stores = await Store
+        .find({ //find the stores based on query value
+            $text: {
+                $search: req.query.q
+            }
+        }, {
+            score: {
+                $meta: 'textScore'
+            }
+        })
+        .sort({ //sort by score
+            score: {
+                $meta: 'textScore'
+            }
+        })
+        .limit(5); //limit the results to 5
+    res.json(stores);
+};
