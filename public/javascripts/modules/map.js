@@ -57,6 +57,11 @@ function makeMap(mapDiv) {
     const map = new google.maps.Map(mapDiv, mapOptions);
     const input = $('[name="geolocate"]'); //$ using bling to select the element
     const autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        loadPlaces(map, place.geometry.location.lat(), place.geometry.location.lng());
+        console.log(place);
+    });
     loadPlaces(map);
 }
 
