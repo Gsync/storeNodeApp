@@ -1018,6 +1018,7 @@ function loadPlaces(map) {
         var places = res.data;
         if (!places.length) return;
         var bounds = new google.maps.LatLngBounds(); //create map bounds
+        var infoWindow = new google.maps.InfoWindow(); //create info window
         var markers = places.map(function (place) {
             var _place$location$coord = _slicedToArray(place.location.coordinates, 2),
                 placelng = _place$location$coord[0],
@@ -1032,6 +1033,16 @@ function loadPlaces(map) {
             marker.place = place;
             return marker;
         });
+
+        //Infowindow
+        markers.forEach(function (marker) {
+            marker.addListener('click', function () {
+                //addListener is google's method like addEventListener
+                infoWindow.setContent(this.place.name);
+                infoWindow.open(map, marker); //marker === this (marker can be replaced by this)
+            });
+        });
+
         //zoom the map to fit all the markers
         map.setCenter(bounds.getCenter()); //center
         map.fitBounds(bounds); //zoom
