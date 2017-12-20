@@ -15,9 +15,11 @@ function loadPlaces(map, lat=43.2, lng=-79.8) {
         .then(res => {
             const places = res.data;
             if (!places.length) return ;
+            const bounds = new google.maps.LatLngBounds(); //create map bounds
             const markers = places.map(place => {
                 const [placelng, placelat] = place.location.coordinates;
                 const position = { lat: placelat, lng: placelng };
+                bounds.extend(position); //extend the bounds to position
                 const marker = new google.maps.Marker({
                     map: map,
                     position: position
@@ -25,6 +27,9 @@ function loadPlaces(map, lat=43.2, lng=-79.8) {
                 marker.place = place;
                 return marker;
             });
+            //zoom the map to fit all the markers
+            map.setCenter(bounds.getCenter()); //center
+            map.fitBounds(bounds);  //zoom
         })
 }
 
