@@ -1038,7 +1038,8 @@ function loadPlaces(map) {
         markers.forEach(function (marker) {
             marker.addListener('click', function () {
                 //addListener is google's method like addEventListener
-                infoWindow.setContent(this.place.name);
+                var html = '\n                    <div class="popup">\n                        <a href="/store/' + this.place.slug + '">\n                            <img src="/uploads/' + (this.place.photo || 'store.png') + '" alt="' + this.place.name + '" />\n                            <p>' + this.place.name + ' - ' + this.place.location.address + '</p>\n                        </a>    \n                    </div>\n                ';
+                infoWindow.setContent(html);
                 infoWindow.open(map, marker); //marker === this (marker can be replaced by this)
             });
         });
