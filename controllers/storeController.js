@@ -117,3 +117,20 @@ exports.searchStores = async (req, res) => {
         .limit(5); //limit the results to 5
     res.json(stores);
 };
+
+exports.mapStores = async (req, res) => {
+    const coordinates = [+req.query.lng, +req.query.lat];
+    const q = {
+        location: {
+            $near: {
+                $geometry: {
+                    type: 'Point',
+                    coordinates: coordinates
+                },
+                $maxDistance: 10000 //10km
+            }
+        }
+    };
+    const stores = await Store.find(q).select('slug name description location').limit(10);
+    res.json(stores);
+};
