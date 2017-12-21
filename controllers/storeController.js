@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
+const User = mongoose.model('User');
 const multer = require('multer'); //handle file uploading
 
 const jimp = require('jimp');
@@ -137,4 +138,14 @@ exports.mapStores = async (req, res) => {
 
 exports.mapPage = (req, res) => {
     res.render('map', { title: 'Map' });
+};
+
+exports.heartStore = async (req, res) => {
+    const hearts = req.user.hearts.map(obj => obj.toString());
+    const operator = hearts.includes(req.params.id) ? '$pull' : '$addToSet'; //if already is array remove it else add it(unique)
+    const user = await User.findByIdAndUpdate(req.user._id, {
+            [operator]: { hearts: req.params.id } //[operator] === either $pull or $addToSet - ES6
+    }, { new: true }); //returns new updated object 
+    console.log(hearts);
+    res.json(user);
 };
