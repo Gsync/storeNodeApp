@@ -79,7 +79,49 @@ storeSchema.statics.getTagsList = function () {
     ]);
 }
 
-//Find reviews where the store _id property === reviews store property
+//using mongodb method
+storeSchema.statics.getTopStores = function () {
+    return this.aggregate([
+        //lookup the stores and populate the reviews
+        {
+            $lookup: {
+                from: 'reviews', //reviews is the Review model coming from mongodb
+                localField: '_id',
+                foreignField: 'store',
+                as: 'reviews'
+            }
+        },
+        {
+            //filter for only items that have two or more reviews
+            $match: {
+                'reviews.1': { //accessing the second index or reviews array in mongodb
+                    $exists: true
+                }
+            }
+        },
+        //Add the average reviews field (averageRating) and calculate average ($avg)
+            //**Note**Replace $addField with $project if old mongodb version(3.2) at mlab
+        {
+            $addFields: {
+                averageRating: {
+                    $avg: '$reviews.rating'
+                }
+            }
+        },
+        //sort it by our new field, highest first
+        {
+            $sort: {
+                averageRating: -1
+            }
+        },
+        //limit to at most 10
+        {
+            $limit: 10
+        }
+    ]);
+}
+
+//Using mongoose method: Find reviews where the store _id property === reviews store property
 storeSchema.virtual('reviews', {
     ref: 'Review', //what model to link
     localField: '_id', //which field on the store?

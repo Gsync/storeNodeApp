@@ -50,6 +50,8 @@ router.post('/account/reset/:token',
     authController.confirmedPasswords,
     catchErrors(authController.update)
 );
+
+router.get('/top', catchErrors(storeController.getTopStores));
  
 router.get('/map', storeController.mapPage);
 
@@ -62,5 +64,6 @@ router.post('/api/stores/:id/heart', catchErrors(storeController.heartStore));
 router.get('/hearts', authController.isLoggedIn, catchErrors(storeController.getHearts));
 
 router.post('/reviews/:id', authController.isLoggedIn, catchErrors(reviewController.addReview));
+
 
 module.exports = router;
