@@ -85,7 +85,7 @@ exports.updateStore = async (req, res) => {
 
 exports.getStoreBySlug = async (req, res, next) => {
     const store = await Store.findOne({ slug: req.params.slug })
-        .populate('author'); //add user info in the object
+        .populate('author reviews'); //add user info in the object
     if (!store) return next(); //keep going to next if no store
     res.render('store', { title: store.name, store });
 };
