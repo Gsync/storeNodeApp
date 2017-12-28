@@ -1,4 +1,4 @@
 # storeNodeApp
 
 - npm install
-- npm start
+- `npm run dev` to start local server
